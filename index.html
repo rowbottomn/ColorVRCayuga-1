@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>repl.it</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <script src="https://rawgit.com/aframevr/aframe/master/dist/aframe-master.min.js"></script>
+    <script src="https://unpkg.com/aframe-event-set-component@5.0.0/dist/aframe-event-set-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.min.js"></script>
+    <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v4.0.1/dist/aframe-physics-system.min.js"></script>
+  </head>
+  <body>
+    <a-scene id = "scene" physics = "friction : 100.0; restitution : 0.8">
+      <a-assets>
+        <img id = "img-sparkle" src = "\assets\images\sparkle.png">
+        <img id = "img-glitter" src = "\assets\images\glitter.png">
+        <audio id = "red-cay" src = "\assets\sounds\red.mp3" preload="auto"></audio>
+        <audio id = "blue-cay" src = "\assets\sounds\blue.mp3" preload="auto"></audio>
+        <audio id = "green-cay" src = "\assets\sounds\green.mp3" preload="auto"></audio>
+        <audio id = "orange-cay" src = "\assets\sounds\orange.mp3" preload="auto"></audio>
+        <audio id = "pink-cay" src = "\assets\sounds\pink.mp3" preload="auto"></audio>
+        <audio id = "white-cay" src = "\assets\sounds\white.mp3" preload="auto"></audio>
+        <audio id = "purple-cay" src = "\assets\sounds\purple.mp3" preload="auto"></audio>
+        <audio id = "brown-cay" src = "\assets\sounds\brown.mp3" preload="auto"></audio>
+        <a-mixin id = "cursor-mixin" cursor = "rayOrigin : mouse"></a-mixin>
+      </a-assets>
+      <a-entity id = "world" environment= "preset:forest; skyType:gradient; shadow: true; fog: 0.4; "></a-entity>
+
+
+      <a-plane id = "floor" scale = "100 100 1" rotation = "-90 0 0" static-body visible = "false"></a-plane> 
+      <a-camera id = "camera" mixin = "cursor-mixin">
+        <a-light position = "0 0 0" type = "point" intensity = "0.4"></a-light>
+        
+        <!--<a-sphere   id = "indicator" position="0.6 0.25 -0.8" color="grey"  scale="0.2 0.2 0.2"  rotation="0 -90 0"   material="src : \assets\images\waterswirl.jpeg; transparent: true; opacity: 0.2; side : double; emission : 1.0" 
+        event-set__click= "color:red"> 
+        </a-sphere>-->
+      </a-camera>
+    </a-scene>
+    
+    <script src="script.js" defer="true"></script>
+  </body>
+</html>
