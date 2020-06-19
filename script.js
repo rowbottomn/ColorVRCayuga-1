@@ -75,7 +75,7 @@ var spawnSingle = (primitive, _pos, _col, _index)=>{
         temp = _index;
       }
       else{
-        temp =  randInt(colorArray.length, 0);
+        temp =  randInt(colorArray.length-1, 0);
       }
       
       var tempCol = colorArray[temp];
@@ -98,7 +98,7 @@ var spawnGrid = (primitive)=>{
   for (var y = 0; y < numRow; y++ ){
     for (var x = -halfCol; x < halfCol+1; x++){
       const pos = x+" "+(2*y+3.6)+" -5"; 
-      spawnSingle(primitive, pos, null, 1);
+      spawnSingle(primitive, pos);
     }
   }
 
@@ -143,7 +143,7 @@ var shoot = () => {
   bullet.setAttribute("bounces", "0");
   //add addEventListener for the collision
   bullet.addEventListener('collide', shootCollided);
-   changeIndicator();
+   
 };
 
 const shootCollided = event => {
@@ -161,7 +161,11 @@ const shootCollided = event => {
     scene.removeChild(event.detail.target.el);}
   } else if (event.detail.body.el.className === 'target') {
     if (event.detail.target.el.getAttribute("colorIndex")==event.detail.body.el.getAttribute("colorIndex")){
-      console.log('Hit the target!');
+      log("removing "+ entityArray.indexOf(event.detail.body.el)+ " from the list");
+      var index = entityArray.indexOf(event.detail.body.el);
+      if (index !== -1) entityArray.splice(index, 1);
+      logArray(entityArray, "colorIndex");
+      console.log('Hit the target! '+ entityArray.length+" more remaining!");
       event.detail.target.el.removeEventListener('collide', shootCollided);
       scene.removeChild(event.detail.target.el);//
       scene.removeChild(event.detail.body.el);
@@ -169,10 +173,14 @@ const shootCollided = event => {
     else {
       log("nope");
     }
+    
   }
-  if (document.querySelectorAll('.target').length === 0) {
+  if (entityArray.length === 0) {
     console.log('You win!');
     location.href = nextLevel;
+  }
+  else{
+    changeIndicator();
   }
 };
 
@@ -184,8 +192,15 @@ document.onkeyup = event => {
   }
 };
 
+const logArray = (_array, _attribute)=>{
+  for (var i = 0; i < _array.length; i++){
+
+    log(_array[i].getAttribute(_attribute));
+  }
+}
+
 var changeIndicator = ()=>{
-  var rand =  randInt(entityArray.length-1, 0);
+  var rand =  randInt(entityArray.length, 0);
   var temp = entityArray[rand].getAttribute("colorIndex");
   log("rand is "+ rand+" temp is "+ temp);
   var tempCol = colorArray[temp];
@@ -210,14 +225,14 @@ var colorArray = getColorArray(sounds);
 
 var entityArray = [];
 
-const maxEntities = 10;
+//const maxEntities = 10;
 
 //var myScene = document.getElementById('scene');
 var myCamera = document.getElementById('camera');
 var cursor;
 
-var numRow = 3;
-var numCol = 6;
+var numRow = 5;
+var numCol = 10 ;
 //var gridArray = [,];
 
 //set the intial level
