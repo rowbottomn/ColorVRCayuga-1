@@ -56,41 +56,52 @@ var randInt = (max, min) =>{
   return Math.floor(randDbl(max,min));
 }
 
+var spawnSingle = (primitive, _pos, _col, _index)=>{
+      const newEntity = document.createElement(primitive);
+      newEntity.setAttribute("position",_pos );
+      newEntity.setAttribute("scale","0.999 0.999 0.999" );
+      newEntity.classList.add("target");
+
+      newEntity.setAttribute("dynamic-body", "mass:1;  linearDamping : 0.001; angularDamping : 0.001;");
+
+      //registring a custom component
+      newEntity.setAttribute("mute-vel", "el."+newEntity);
+      //an event listener currently unused
+      newEntity.addEventListener('click', function (evt) {
+      //console.log('Myclass is : ', evt.detail.el, "and my color is: ", this);
+      });
+      var temp;
+      if (_index != null&&_index < colorArray.length){
+        temp = _index;
+      }
+      else{
+        temp =  randInt(colorArray.length, 0);
+      }
+      
+      var tempCol = colorArray[temp];
+      if (_col != null){
+        tempCol = _col;
+        temp = colorArray.indexOf(tempCol); 
+      }
+     // log(tempCol);
+      newEntity.setAttribute("colorIndex", temp);
+      newEntity.setAttribute("material", "color:"+tempCol);
+      newEntity.setAttribute("sound", "src: #"+tempCol+"-cay; poolSize : 5; on: click");
+      //messing around with physics
+      
+    entityArray.push(newEntity);
+    scene.appendChild(newEntity);
+}
 
 var spawnGrid = (primitive)=>{
   var halfCol = Math.floor(numCol/2); 
   for (var y = 0; y < numRow; y++ ){
     for (var x = -halfCol; x < halfCol+1; x++){
-      const newEntity = document.createElement(primitive);
-      newEntity.setAttribute("position",x+" "+(2*y+3.6)+" -5" );
-      newEntity.setAttribute("scale","0.999 0.999 0.999" );
-      temp =  randInt(colorArray.length, 0);
-      
-      const tempCol = colorArray[temp];
-     // log(tempCol);
-      newEntity.classList.add("target");
-      //newEntity.setAttribute("class", "target");
-      newEntity.setAttribute("colorIndex", temp);
-      newEntity.setAttribute("material", "color:"+tempCol);
-     // newEntity.setAttribute("material", "transparent : true; opacity : 0.9");
-      newEntity.setAttribute("sound", "src: #"+tempCol+"-cay; poolSize : 5; on: click");
-      //messing around with physics
-      newEntity.setAttribute("dynamic-body", "mass:1;  linearDamping : 0.001; angularDamping : 0.001;");
-
-      //registring a custom component
-      newEntity.setAttribute("mute-vel", "el."+newEntity);
-      newEntity.addEventListener('click', function (evt) {
-      //console.log('Myclass is : ', evt.detail.el, "and my color is: ", this);
-    });
-      gridArray[x,y] = newEntity;
-      scene.appendChild(newEntity);
+      const pos = x+" "+(2*y+3.6)+" -5"; 
+      spawnSingle(primitive, pos, null, 1);
     }
   }
 
- // var vel = body.get_velocity();
- // log(vel);
- // var val = vel.value;
- // log(val);
 };
 
 
@@ -104,10 +115,10 @@ var shoot = () => {
   //set the bullet position to the player position
   bullet.setAttribute("position", pos);
   bullet.setAttribute("scale", "0.3 0.3 0.3");
-  var temp = indicator.getAttribute("colorIndex");
-  var tempCol = indicator.getAttribute("color");
+  var temp = indicator.getAttribute("colorIndex")
+  var tempCol = colorArray[temp];
   bullet.setAttribute("colorIndex", temp);
-  bullet.setAttribute("material", "color:"+tempCol);
+  bullet.setAttribute("color", tempCol);
      // newEntity.setAttribute("material", "transparent : true; opacity : 0.9");
   //set the bullet velocity to the camera direction a
 
@@ -121,17 +132,18 @@ var shoot = () => {
   
   
  // bullet.setAttribute("radius", 0.5);
-  bullet.setAttribute("emissive", tempCol);
+
   //set the texture
   //bullet.setAttribute("src", "/assets/orb.png");
   //  bullet.setAttribute("material", "emissive = #EEFF11; emissiveIntensity = 1; color = #FFFF00");
   //actutally at the a-entitiy to the a-scene
   scene.appendChild(bullet);
- changeIndicator();
+
   bullet.setAttribute("velocity", shootDirection);
   bullet.setAttribute("bounces", "0");
   //add addEventListener for the collision
   bullet.addEventListener('collide', shootCollided);
+   changeIndicator();
 };
 
 const shootCollided = event => {
@@ -148,10 +160,15 @@ const shootCollided = event => {
     event.detail.target.el.removeEventListener('collide', shootCollided);
     scene.removeChild(event.detail.target.el);}
   } else if (event.detail.body.el.className === 'target') {
-    console.log('Hit the target!');
-    event.detail.target.el.removeEventListener('collide', shootCollided);
-    scene.removeChild(event.detail.target.el);//
-    scene.removeChild(event.detail.body.el);
+    if (event.detail.target.el.getAttribute("colorIndex")==event.detail.body.el.getAttribute("colorIndex")){
+      console.log('Hit the target!');
+      event.detail.target.el.removeEventListener('collide', shootCollided);
+      scene.removeChild(event.detail.target.el);//
+      scene.removeChild(event.detail.body.el);
+    }
+    else {
+      log("nope");
+    }
   }
   if (document.querySelectorAll('.target').length === 0) {
     console.log('You win!');
@@ -168,11 +185,15 @@ document.onkeyup = event => {
 };
 
 var changeIndicator = ()=>{
-  var temp =  randInt(colorArray.length, 0);
-  indicator.setAttribute("colorIndex", temp);
+  var rand =  randInt(entityArray.length-1, 0);
+  var temp = entityArray[rand].getAttribute("colorIndex");
+  log("rand is "+ rand+" temp is "+ temp);
   var tempCol = colorArray[temp];
-  indicator.setAttribute("colorIndex", temp );
   indicator.setAttribute("color", tempCol);
+  //indicator.setAttribute("text", "value = "+tempCol);
+  //indicator.setAttribute("emissive", tempCol);
+  indicator.setAttribute("colorIndex",temp);
+  log("tempCol is "+ tempCol);
   indicator.setAttribute("sound", "src: #"+tempCol+"-cay; poolSize : 5; on: click");
 
 }
@@ -197,7 +218,7 @@ var cursor;
 
 var numRow = 3;
 var numCol = 6;
-var gridArray = [,];
+//var gridArray = [,];
 
 //set the intial level
 let nextLevel = 'index.html';
