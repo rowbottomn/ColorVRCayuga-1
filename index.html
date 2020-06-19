@@ -23,6 +23,7 @@
         <audio id = "white-cay" src = "\assets\sounds\white.mp3" preload="auto"></audio>
         <audio id = "purple-cay" src = "\assets\sounds\purple.mp3" preload="auto"></audio>
         <audio id = "brown-cay" src = "\assets\sounds\brown.mp3" preload="auto"></audio>
+        <audio id = "yellow-cay" src ="\assets\sounds\yellow.wav" preload="auto"></audio>
         <a-mixin id = "cursor-mixin" cursor = "rayOrigin : mouse"></a-mixin>
       </a-assets>
       <a-entity id = "world" environment= "preset:forest; skyType:gradient; shadow: true; fog: 0.4; "></a-entity>
@@ -31,7 +32,9 @@
       <a-plane id = "floor" scale = "100 100 1" rotation = "-90 0 0" static-body visible = "false"></a-plane> 
       <a-camera id = "camera" mixin = "cursor-mixin">
         <a-light position = "0 0 0" type = "point" intensity = "0.4"></a-light>
-        
+        <a-circle id = "indicator" position = "0.5 0.3 -0.5" scale = "0.1 0.1 1" color = "white" transparent = "true" opacity = "0.9" ></a-circle>
+
+        <a-ring position = "0 0 -3" thetaSegments= "3" ></a-ring> 
         <!--<a-sphere   id = "indicator" position="0.6 0.25 -0.8" color="grey"  scale="0.2 0.2 0.2"  rotation="0 -90 0"   material="src : \assets\images\waterswirl.jpeg; transparent: true; opacity: 0.2; side : double; emission : 1.0" 
         event-set__click= "color:red"> 
         </a-sphere>-->
