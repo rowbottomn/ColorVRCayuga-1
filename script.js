@@ -4,11 +4,12 @@ AFRAME.registerComponent('mute-vel', {
   init: function(){
 
     this.tick = AFRAME.utils.throttleTick(this.tick, 15./90., this);
-    
+
   },
 
   click: function(){
     log("clicked on this" + this.el.className);
+    this.el.sound.play();
     //log(this.el.parentNode.removeChild(entityEl));
   },
 
@@ -28,7 +29,6 @@ AFRAME.registerComponent('mute-vel', {
   }
  
 });
-
 
 var log = function (msg){
   console.log(msg);
@@ -119,6 +119,7 @@ var shoot = () => {
   var tempCol = colorArray[temp];
   bullet.setAttribute("colorIndex", temp);
   bullet.setAttribute("color", tempCol);
+
      // newEntity.setAttribute("material", "transparent : true; opacity : 0.9");
   //set the bullet velocity to the camera direction a
 
@@ -143,7 +144,7 @@ var shoot = () => {
   bullet.setAttribute("bounces", "0");
   //add addEventListener for the collision
   bullet.addEventListener('collide', shootCollided);
-   
+ // bullet.emit("play-sound",null, true);
 };
 
 const shootCollided = event => {
@@ -173,14 +174,14 @@ const shootCollided = event => {
     else {
       log("nope");
     }
-    
+    changeIndicator();
   }
   if (entityArray.length === 0) {
     console.log('You win!');
     location.href = nextLevel;
   }
   else{
-    changeIndicator();
+    
   }
 };
 
@@ -200,16 +201,21 @@ const logArray = (_array, _attribute)=>{
 }
 
 var changeIndicator = ()=>{
+  
   var rand =  randInt(entityArray.length, 0);
   var temp = entityArray[rand].getAttribute("colorIndex");
   log("rand is "+ rand+" temp is "+ temp);
+  sounds[temp].play();
   var tempCol = colorArray[temp];
   indicator.setAttribute("color", tempCol);
   //indicator.setAttribute("text", "value = "+tempCol);
   //indicator.setAttribute("emissive", tempCol);
   indicator.setAttribute("colorIndex",temp);
   log("tempCol is "+ tempCol);
-  indicator.setAttribute("sound", "src: #"+tempCol+"-cay; poolSize : 5; on: click");
+  indicator.setAttribute("sound", "src: #"+tempCol+"-cay;");
+   // var audio = ;
+  
+  //log(audio);
 
 }
 
@@ -219,7 +225,7 @@ var scene = document.getElementById("scene");
 
 var sounds = scene.getElementsByTagName("audio");
 
-//log(sounds.length);
+logArray(sounds);
 
 var colorArray = getColorArray(sounds);
 
@@ -241,4 +247,15 @@ var shootDirection = new THREE.Vector3();
 const bulletSpeed = -20;
 
 spawnGrid("a-box");
+
+//this.el.emit('dataready', {value: 2, el: this.el})
 changeIndicator();
+/*indicator.addEventListener("play-sound", ()=>{
+  var el = this.el;
+  log(el);
+  var audio = el.getAttribute(color);
+  log(audio);
+  var audio2play = document.getElementById("#"+audio+"-cay");
+  audio2play.play();
+});*/
+indicator.addEventListener("click", shoot);

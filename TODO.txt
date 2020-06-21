@@ -1,0 +1,8 @@
+Change indicator to fire the projectiles to make it usable on mobile.
+Have sound played on indicator change.
+Create array of Cayuga words.
+Change indicator to have word of the projectile color
+Add block penalty for getting color wrong or missing
+Add timer element
+Track timer scores 
+  score = X * timeRemaining + blocksDestroyed
