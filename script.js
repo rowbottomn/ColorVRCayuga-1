@@ -1,14 +1,19 @@
+//moving globals to here
+
+var colorIndicator = true;
+
 
 AFRAME.registerComponent('mute-vel', {
 
   init: function(){
 
     this.tick = AFRAME.utils.throttleTick(this.tick, 15./90., this);
-    
+
   },
 
   click: function(){
     log("clicked on this" + this.el.className);
+    this.el.sound.play();
     //log(this.el.parentNode.removeChild(entityEl));
   },
 
@@ -29,7 +34,6 @@ AFRAME.registerComponent('mute-vel', {
  
 });
 
-
 var log = function (msg){
   console.log(msg);
 }
@@ -38,8 +42,9 @@ var getColorArray = function(audioArray){
   var _colorArray = [];
   //make an array of color names from the file names
   for (var i = 0; i < audioArray.length; i ++){
-    _colorArray.push(audioArray[i].src.split('.')[2].split('/')[3]);
-    log(_colorArray[i]);
+    log( audioArray[i].src.split('.')[3].split('/')[3]);
+    _colorArray.push(audioArray[i].src.split('.')[3].split('/')[3]);
+    log(i+","+_colorArray[i]);
   }
   return _colorArray;
 }
@@ -57,40 +62,42 @@ var randInt = (max, min) =>{
 }
 
 var spawnSingle = (primitive, _pos, _col, _index)=>{
-      const newEntity = document.createElement(primitive);
-      newEntity.setAttribute("position",_pos );
-      newEntity.setAttribute("scale","0.999 0.999 0.999" );
-      newEntity.classList.add("target");
+    const newEntity = document.createElement(primitive);
+    newEntity.setAttribute("position",_pos );
+    newEntity.setAttribute("scale","0.999 0.999 0.999" );
+    newEntity.classList.add("target");
 
-      newEntity.setAttribute("dynamic-body", "mass:1;  linearDamping : 0.001; angularDamping : 0.001;");
+    newEntity.setAttribute("dynamic-body", "mass:1;  linearDamping : 0.001; angularDamping : 0.001;");
 
-      //registring a custom component
-      newEntity.setAttribute("mute-vel", "el."+newEntity);
-      //an event listener currently unused
-      newEntity.addEventListener('click', function (evt) {
-      //console.log('Myclass is : ', evt.detail.el, "and my color is: ", this);
-      });
-      var temp;
-      if (_index != null&&_index < colorArray.length){
-        temp = _index;
-      }
-      else{
-        temp =  randInt(colorArray.length-1, 0);
-      }
-      
-      var tempCol = colorArray[temp];
-      if (_col != null){
-        tempCol = _col;
-        temp = colorArray.indexOf(tempCol); 
-      }
-     // log(tempCol);
-      newEntity.setAttribute("colorIndex", temp);
-      newEntity.setAttribute("material", "color:"+tempCol);
-      newEntity.setAttribute("sound", "src: #"+tempCol+"-cay; poolSize : 5; on: click");
-      //messing around with physics
-      
-    entityArray.push(newEntity);
-    scene.appendChild(newEntity);
+    //registring a custom component
+    newEntity.setAttribute("mute-vel", "el."+newEntity);
+    //an event listener currently unused
+    newEntity.addEventListener('click', function (evt) {
+    //console.log('Myclass is : ', evt.detail.el, "and my color is: ", this);
+    });
+    var temp;
+    //if (_index != null&&_index < colorArray.length){  
+   // if (_index != null&&_index < maxIndex){
+   //   temp = _index;
+   // }
+   // else{
+      //temp =  randInt(colorArray.length-1, 0);
+      temp =  randInt(maxIndex, 0);
+   // }
+    
+    var tempCol = colorArray[temp];
+    if (_col != null){
+      tempCol = _col;
+      temp = colorArray.indexOf(tempCol); 
+    }
+    // log(tempCol);
+    newEntity.setAttribute("colorIndex", temp);
+    newEntity.setAttribute("material", "color:"+tempCol);
+    newEntity.setAttribute("sound", "src: #"+tempCol+"-cay; poolSize : 5; on: click");
+    //messing around with physics
+    
+  entityArray.push(newEntity);
+  scene.appendChild(newEntity);
 }
 
 var spawnGrid = (primitive)=>{
@@ -101,7 +108,7 @@ var spawnGrid = (primitive)=>{
       spawnSingle(primitive, pos);
     }
   }
-
+  changeIndicator();
 };
 
 
@@ -119,6 +126,7 @@ var shoot = () => {
   var tempCol = colorArray[temp];
   bullet.setAttribute("colorIndex", temp);
   bullet.setAttribute("color", tempCol);
+
      // newEntity.setAttribute("material", "transparent : true; opacity : 0.9");
   //set the bullet velocity to the camera direction a
 
@@ -143,7 +151,7 @@ var shoot = () => {
   bullet.setAttribute("bounces", "0");
   //add addEventListener for the collision
   bullet.addEventListener('collide', shootCollided);
-   
+ // bullet.emit("play-sound",null, true);
 };
 
 const shootCollided = event => {
@@ -169,48 +177,76 @@ const shootCollided = event => {
       event.detail.target.el.removeEventListener('collide', shootCollided);
       scene.removeChild(event.detail.target.el);//
       scene.removeChild(event.detail.body.el);
+
+      if (entityArray.length === 0) {
+        console.log('You win!');
+        level = advanceLevel(level);
+        
+        spawnGrid("a-box");
+        //location.href = nextLevel;
+      }
+      else{
+        changeIndicator();
+      }
     }
     else {
       log("nope");
     }
     
   }
-  if (entityArray.length === 0) {
-    console.log('You win!');
-    location.href = nextLevel;
-  }
-  else{
-    changeIndicator();
-  }
+
 };
 
 document.onkeyup = event => {
   if (event.which == 32) {
     shoot();
   } else if (event.which == 67) {
-    //spawnEntities();
+    spawnGrid(a-box);
   }
+   else if (event.which == 71) {
+    colorIndicator = !colorIndicator; 
+    changeIndicator();
+   }
 };
 
 const logArray = (_array, _attribute)=>{
   for (var i = 0; i < _array.length; i++){
-
+    //log("log array");
     log(_array[i].getAttribute(_attribute));
   }
 }
 
 var changeIndicator = ()=>{
+  
   var rand =  randInt(entityArray.length, 0);
   var temp = entityArray[rand].getAttribute("colorIndex");
   log("rand is "+ rand+" temp is "+ temp);
+  
   var tempCol = colorArray[temp];
-  indicator.setAttribute("color", tempCol);
+  if (colorIndicator){
+    indicator.setAttribute("color", tempCol);
+  }
+  else {
+    indicator.setAttribute("color", "grey");
+  }
   //indicator.setAttribute("text", "value = "+tempCol);
   //indicator.setAttribute("emissive", tempCol);
   indicator.setAttribute("colorIndex",temp);
   log("tempCol is "+ tempCol);
-  indicator.setAttribute("sound", "src: #"+tempCol+"-cay; poolSize : 5; on: click");
+  indicator.setAttribute("sound", "src: #"+tempCol+"-cay;");
+   // var audio = ;
+  
+  //log(audio);
+  sounds[temp].play();
+}
 
+var advanceLevel = (_level) =>{
+  _level ++;
+  numRow = Math.floor(_level/4)+2;
+  numCol = _level+2;
+  maxIndex = Math.min(Math.floor(2*_level)+3, colorArray.length);
+  log("advanceLevel:"+_level+", "+numRow+", "+numCol+", "+maxIndex);
+  return _level;
 }
 
 var indicator = document.getElementById("indicator");
@@ -219,7 +255,7 @@ var scene = document.getElementById("scene");
 
 var sounds = scene.getElementsByTagName("audio");
 
-//log(sounds.length);
+logArray(sounds, "src");
 
 var colorArray = getColorArray(sounds);
 
@@ -230,15 +266,26 @@ var entityArray = [];
 //var myScene = document.getElementById('scene');
 var myCamera = document.getElementById('camera');
 var cursor;
-
-var numRow = 5;
-var numCol = 10 ;
+var level = 0;
+var numRow = Math.floor(level/4)+2;
+var numCol = level+2;
 //var gridArray = [,];
-
+var maxIndex = Math.min(Math.floor(2*level)+3, colorArray.length);
 //set the intial level
 let nextLevel = 'index.html';
 var shootDirection = new THREE.Vector3();
 const bulletSpeed = -20;
 
 spawnGrid("a-box");
+
+//this.el.emit('dataready', {value: 2, el: this.el})
 changeIndicator();
+/*indicator.addEventListener("play-sound", ()=>{
+  var el = this.el;
+  log(el);
+  var audio = el.getAttribute(color);
+  log(audio);
+  var audio2play = document.getElementById("#"+audio+"-cay");
+  audio2play.play();
+});*/
+indicator.addEventListener("click", shoot);

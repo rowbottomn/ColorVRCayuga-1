@@ -1,0 +1,13 @@
+XChange indicator to fire the projectiles to make it usable on mobile.
+  XNeed to move the indicator to just inside top right of window
+Have sound played on indicator change.
+  Does not work on iOS
+Create array of Cayuga words to display
+Change indicator to have word of the projectile color
+Add block penalty for getting color wrong or missing
+Add timer element
+Track timer scores 
+  score = X * timeRemaining + blocksDestroyed
+
+Add launch screen.
+Add instructions

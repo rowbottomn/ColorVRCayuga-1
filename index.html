@@ -18,12 +18,14 @@
         <audio id = "red-cay" src = "\assets\sounds\red.mp3" preload="auto"></audio>
         <audio id = "blue-cay" src = "\assets\sounds\blue.mp3" preload="auto"></audio>
         <audio id = "green-cay" src = "\assets\sounds\green.mp3" preload="auto"></audio>
-        <audio id = "orange-cay" src = "\assets\sounds\orange.mp3" preload="auto"></audio>
+        <audio id = "yellow-cay" src ="\assets\sounds\yellow.wav" preload="auto"></audio>
+
         <audio id = "pink-cay" src = "\assets\sounds\pink.mp3" preload="auto"></audio>
         <audio id = "white-cay" src = "\assets\sounds\white.mp3" preload="auto"></audio>
         <audio id = "purple-cay" src = "\assets\sounds\purple.mp3" preload="auto"></audio>
         <audio id = "brown-cay" src = "\assets\sounds\brown.mp3" preload="auto"></audio>
-        <audio id = "yellow-cay" src ="\assets\sounds\yellow.wav" preload="auto"></audio>
+        <audio id = "orange-cay" src = "\assets\sounds\orange.mp3" preload="auto"></audio>
+
         <a-mixin id = "cursor-mixin" cursor = "rayOrigin : mouse"></a-mixin>
       </a-assets>
       <a-entity id = "world" environment= "preset:forest; skyType:gradient; shadow: true; fog: 0.4; "></a-entity>
@@ -32,7 +34,7 @@
       <a-plane id = "floor" scale = "100 100 1" rotation = "-90 0 0" static-body visible = "false"></a-plane> 
       <a-camera id = "camera" mixin = "cursor-mixin">
         <a-light position = "0 0 0" type = "point" intensity = "0.4"></a-light>
-        <a-circle id = "indicator" position = "0.5 0.3 -0.5" scale = "0.1 0.1 1" color = "white" transparent = "true" opacity = "0.9" ></a-circle>
+        <a-circle id = "indicator" position = "0.5 0.3 -0.5" scale = "0.1 0.1 1" color = "white" transparent = "true" opacity = "0.9" sound = "poolSize : 5; on : changed"></a-circle>
 
         <a-entity geometry = "primitive:ring; segmentsTheta : 32; radiusInner : 0.2; radiusOuter : 0.22" position = "0 0 -3"  >
           <a-plane width = "0.02" rotation = "0 0 90" length = "0.1"></a-plane>
