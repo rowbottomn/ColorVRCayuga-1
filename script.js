@@ -12,7 +12,7 @@ AFRAME.registerComponent('mute-vel', {
   },
 
   click: function(){
-    log("clicked on this" + this.el.className);
+    log("clicked on this" +  this.el.className);
     this.el.sound.play();
     //log(this.el.parentNode.removeChild(entityEl));
   },
@@ -104,7 +104,7 @@ var spawnGrid = (primitive)=>{
   var halfCol = Math.floor(numCol/2); 
   for (var y = 0; y < numRow; y++ ){
     for (var x = -halfCol; x < halfCol+1; x++){
-      const pos = x+" "+(2*y+3.6)+" -5"; 
+      const pos = x+" "+(2*y+3.6)+" -5"; log('poop');
       spawnSingle(primitive, pos);
     }
   }
@@ -200,13 +200,15 @@ const shootCollided = event => {
 document.onkeyup = event => {
   if (event.which == 32) {
     shoot();
-  } else if (event.which == 67) {
+  } 
+  else if (event.which == 67) {
     spawnGrid(a-box);
   }
-   else if (event.which == 71) {
+  else if (event.which == 71) {
     colorIndicator = !colorIndicator; 
     changeIndicator();
-   }
+  }
+  
 };
 
 const logArray = (_array, _attribute)=>{
@@ -265,6 +267,7 @@ var entityArray = [];
 
 //var myScene = document.getElementById('scene');
 var myCamera = document.getElementById('camera');
+const info_panel = document.getElementById('info_panel');
 var cursor;
 var level = 0;
 var numRow = Math.floor(level/4)+2;
@@ -276,6 +279,10 @@ let nextLevel = 'index.html';
 var shootDirection = new THREE.Vector3();
 const bulletSpeed = -20;
 
+info_panel.addEventListener('click', (e)=>{
+  //log(info_panel.attributes);
+  info_panel.setAttribute('visible', false);
+});
 spawnGrid("a-box");
 
 //this.el.emit('dataready', {value: 2, el: this.el})

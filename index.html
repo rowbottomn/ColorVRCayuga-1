@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width">
     <title>repl.it</title>
     <link href="style.css" rel="stylesheet" type="text/css" />
-    <script src="https://rawgit.com/aframevr/aframe/master/dist/aframe-master.min.js"></script>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-event-set-component@5.0.0/dist/aframe-event-set-component.min.js"></script>
     <script src="https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.min.js"></script>
     <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v4.0.1/dist/aframe-physics-system.min.js"></script>
@@ -28,14 +28,18 @@
 
         <a-mixin id = "cursor-mixin" cursor = "rayOrigin : mouse"></a-mixin>
       </a-assets>
+
       <a-entity id = "world" environment= "preset:forest; skyType:gradient; shadow: true; fog: 0.4; "></a-entity>
 
-
       <a-plane id = "floor" scale = "100 100 1" rotation = "-90 0 0" static-body visible = "false"></a-plane> 
-      <a-camera id = "camera" mixin = "cursor-mixin">
-        <a-light position = "0 0 0" type = "point" intensity = "0.4"></a-light>
-        <a-circle id = "indicator" position = "0.5 0.3 -0.5" scale = "0.1 0.1 1" color = "white" transparent = "true" opacity = "0.9" sound = "poolSize : 5; on : changed"></a-circle>
 
+      <a-camera id = "camera" raycaster="objects: .clickable" mixin = "cursor-mixin">
+        <a-light position = "0 0 3" type = "point" intensity = "0.4"></a-light>
+        <a-circle id = "indicator" class = "clickable" position = "0.5 0.3 -0.5" scale = "0.1 0.1 1" color = "white" transparent = "true" opacity = "0.9" sound = "poolSize : 5; on : changed"></a-circle>
+        <a-plane id = "info_panel" class = "clickable" position = "0 0 -0.5" width = "1.25" height = "0.8" color = "white" transparent = "true" opacity = "0.4">
+          <a-text align = "center" id = "info_text" position = "0 0.0 0.1" width = "5" wrap-count = "50" value = "Colour Toss Instructions (PC)\nDrag the mouse to aim.\nPress space or click the circle to throw a ball.\nThe ball thrown will match the colour that was spoken.\nIf the ball hits a block of the same colour, it will disappear. \n Remove all the blocks to advance to the next level.\n Press g to turn off the colour indicator.\nCLICK TO CONTINUE." color = "purple" scale = "0.2 0.2 1"></a-text>
+        </a-plane>
+        
         <a-entity geometry = "primitive:ring; segmentsTheta : 32; radiusInner : 0.2; radiusOuter : 0.22" position = "0 0 -3"  >
           <a-plane width = "0.02" rotation = "0 0 90" length = "0.1"></a-plane>
           <a-plane width = "0.02"  length = "0.1"></a-plane>  </a-entity> 
